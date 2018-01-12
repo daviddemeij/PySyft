@@ -1,6 +1,12 @@
 import numpy as np
 
 import syft.controller
+DO_NOT_DELETE = -1
+
+def avoid_deletion(tensor):
+    global DO_NOT_DELETE
+    DO_NOT_DELETE = tensor.id
+    return tensor
 
 class IntTensor():
     def __init__(self, data, data_is_pointer=False):
@@ -1310,11 +1316,15 @@ class FloatTensor():
         Returns
         -------
         """
-        if (self.id is not None):
-            if self.delete_after_use:
-                self.no_params_func("delete", return_response=True, return_type=str)
-        self.controller = None
-        self.id = None
+        global DO_NOT_DELETE
+        if self.id != DO_NOT_DELETE:
+            if (self.id is not None):
+                if self.delete_after_use:
+                    self.no_params_func("delete", return_response=True, return_type=str)
+            self.controller = None
+            self.id = None
+        else:
+            DO_NOT_DELETE = -1
 
 
     def is_contiguous(self):
@@ -1603,7 +1613,7 @@ class FloatTensor():
         FloatTensor
             Output tensor
         """
-        return self.params_func("max", [dim, keepdim], return_response=True)
+        return avoid_deletion(self.params_func("max", [dim, keepdim], return_response=True))
 
     def sum(self, dim=-1, keepdim=False):
         """
