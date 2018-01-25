@@ -28,19 +28,19 @@ class Grid():
 
     def get_experiments(self):
         if not os.path.exists(".openmined/grid/experiments.json"):
-            print(f'{Back.RED}{Fore.WHITE} No experiments found {Style.RESET_ALL}')
+            print("{}{} No experiments found {}".format(Back.RED, Fore.WHITE, Style.RESET_ALL))
             return
 
         with open('.openmined/grid/experiments.json', 'r') as outfile:
             d = json.loads(outfile.read())
-            print(f"{Back.BLACK}{Fore.WHITE} ALL EXPERIMENTS {Style.RESET_ALL}")
-            print(f"Get the result of your experiment by calling {Fore.GREEN}get_results{Style.RESET_ALL} with the highlighted uuid")
+            print("{}{} ALL EXPERIMENTS {}".format(Back.BLACK, Fore.WHITE, Style.RESET_ALL))
+            print("Get the result of your experiment by calling {}get_results{} with the highlighted uuid".format(Fore.GREEN, Style.RESET_ALL))
             print("")
             for experiment in d:
                 name = experiment["name"]
                 uuid = experiment["uuid"]
 
-                print(f"    - {name} ({Fore.GREEN}{uuid}{Style.RESET_ALL})")
+                print("    - {} ({}{}{})".format(name, Fore.GREEN, uuid, Style.RESET_ALL))
 
     def store_job(self, jobId, name=None):
         if name is None:
@@ -86,7 +86,7 @@ class Grid():
                         usedJob = __experiment["jobId"]
 
         if usedJob is None and not experiment is None:
-            raise Exception(f"No experiments matching {Fore.GREEN}{experiment}{Style.RESET_ALL}")
+            raise Exception("No experiments matching {}{}{}{}".format(Fore.GREEN, experiment, Style.RESET_ALL))
 
         if usedJob is None and not self.jobId is None:
             usedJob = self.jobId
